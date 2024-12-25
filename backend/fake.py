@@ -54,3 +54,10 @@ def generate_recipe_data(n_recipes:int=500000, seed:int=42):
     
     return pd.DataFrame(data)
 
+if __name__ == '__main__':
+    patient_data = generate_patient_data(n_patients=1000)
+    recipe_data = generate_recipe_data(n_recipes=500000)
+    # Save generated data to JSON files
+    patient_data.to_json('patient_dataset.json', orient='records', indent=2)
+    recipe_data.to_json('recipe_dataset.json', orient='records', indent=2)
+    print("\nDatasets saved to patient_dataset.json and recipe_dataset.json")

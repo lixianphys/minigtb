@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from vectorize import create_ideal_recipe_vector, create_recipe_vectors, create_strict_mask
@@ -54,29 +55,47 @@ def get_recipe_details(recipe_ids:list, recipes_df:pd.DataFrame)->pd.DataFrame:
     recommended_recipes = recipes_df.loc[recipe_ids]
     return recommended_recipes
 
+def get_patient_data():
+    """
+    Get patient data from the JSON database
+    
+    Returns:
+        DataFrame containing patient data
+    """
+    return pd.read_json('patient_dataset.json')
+
+def get_recipe_data():
+    """
+    Get recipe data from the JSON database
+    
+    Returns:
+        DataFrame containing recipe data
+    """
+    return pd.read_json('recipe_dataset.json')
+
 def main():
-# Example usage
-    patient_id = 96
-    num_recommendations = 3
-    patients_df = generate_patient_data(n_patients=100,seed=42)
+    patient_id = int(sys.argv[1])
+    num_recommendations = int(sys.argv[2])
+
+    patients_df = get_patient_data()
     patients_row = patients_df.iloc[patient_id]
-    recipes_df = generate_recipe_data(n_recipes=500000,seed=42)
+    recipes_df = get_recipe_data()
     recommended_recipes = recommend_recipes(patients_row, recipes_df, n_recommendations=num_recommendations)
     recipe_details = get_recipe_details(recommended_recipes['recipe_ids'], recipes_df)
-    
-    print(f"\nSummary of recommendations for patient:\n{patients_row}\n")
-    print("-"*100)
-    print(f"After filtering for patient's allergies **{patients_row['allergen']}** and diet restrictions **{patients_row['dietary_restriction']}**:\nthe number of recipes is reduced from {len(recipes_df)} to {sum(create_strict_mask(patients_row, recipes_df))}")
-    print("-"*100)
-    print(f"Within the remaining recipes, the top {num_recommendations} recommended recipes are:")
-    for _, recipe in recipe_details.iterrows():
-        print(f"\nRecipe ID: {recipe['recipe_id']}")
-        print(f"Similarity Score: {recommended_recipes['similarities'][recipe['recipe_id']]:.5f}")
-        print(f"Category: {recipe['category']}")
-        print(f"Cuisine: {recipe['cuisine']}")
-        print(f"Calories: {recipe['calories']:.0f}")
-        print(f"Protein: {recipe['protein']:.0f}g")
+
+    with open('result.txt', 'w') as f:
+        f.write(f"\nSummary of recommendations for patient:\n{patients_row}\n\n")
+        f.write("-"*100 + "\n")
+        f.write(f"After filtering for patient's allergies **{patients_row['allergen']}** and diet restrictions **{patients_row['dietary_restriction']}**:\nthe number of recipes is reduced from {len(recipes_df)} to {sum(create_strict_mask(patients_row, recipes_df))}\n")
+        f.write("-"*100 + "\n")
+        f.write(f"Within the remaining recipes, the top {num_recommendations} recommended recipes are:\n")
+        for _, recipe in recipe_details.iterrows():
+            f.write(f"\nRecipe ID: {recipe['recipe_id']}\n")
+            f.write(f"Similarity Score: {recommended_recipes['similarities'][recipe['recipe_id']]:.5f}\n")
+            f.write(f"Category: {recipe['category']}\n")
+            f.write(f"Cuisine: {recipe['cuisine']}\n")
+            f.write(f"Calories: {recipe['calories']:.0f}\n")
+            f.write(f"Protein: {recipe['protein']:.0f}g\n")
 
 if __name__ == "__main__":
-    main()
-    
+    main()    
