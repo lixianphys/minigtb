@@ -3,6 +3,9 @@ NUTRITIONAL_FEATURES = ['calories', 'protein', 'carbs', 'fat', 'sodium']
 TEXTURE_FEATURES = ['is_soft', 'is_crunchy', 'is_chewy', 'is_liquid']
 TEMPERATURE_FEATURES = ['is_cold']
 
+HIGH_BP_THRESHOLD = 130
+HIGH_BS_THRESHOLD = 120
+
 HEALTH_FACTOR = 0.1
 HEALTH_WEIGHTS = {
     'carbs': 20,

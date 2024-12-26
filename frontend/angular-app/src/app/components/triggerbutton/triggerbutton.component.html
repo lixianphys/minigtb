@@ -1,33 +1,117 @@
-<div>
-    <h3>Input Patient ID and Number of Recommendations</h3>
-    <div style="margin: 20px 0;">
-        <div class="form-group" style="display: flex; align-items: center; margin-bottom: 15px;">
-            <label for="patient_id" style="width: 150px;">Patient ID:</label>
-            <input 
-                id="patient_id"
-                [(ngModel)]="patient_id"
-                type="number"
-                class="form-control"
-                placeholder="Enter patient ID"
-                style="margin-left: 10px;"
-            />
-        </div>
-        <div class="form-group" style="display: flex; align-items: center;">
-            <label for="num_recommendations" style="width: 150px;">Number of Recommendations:</label>
-            <input 
-                id="num_recommendations"
-                [(ngModel)]="num_recommendations"
-                type="number"
-                class="form-control"
-                placeholder="Enter number of recommendations"
-                style="margin-left: 10px;"
-            />
+<div class="container">
+    <div class="left-panel" style="float: left; width: 30%;">
+        <div class="trigger-container">
+            <h3>Get Personalized Recommendations</h3>
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="patient_id">Patient ID:</label>
+                    <input 
+                        id="patient_id"
+                        [(ngModel)]="patient_id"
+                        type="number"
+                        class="form-control"
+                        placeholder="Enter patient ID"
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="num_recommendations">Number of Recommendations:</label>
+                    <input 
+                        id="num_recommendations"
+                        [(ngModel)]="num_recommendations"
+                        type="number"
+                        class="form-control"
+                        placeholder="Enter number of recommendations"
+                    />
+                </div>
+            </div>
+            <button class="button" (click)="onTriggerScript()">Recommendation</button>
+            <p *ngIf="responseMessage">{{ responseMessage }}</p>
         </div>
     </div>
-    <h4>Click to run matching</h4>
-    <button (click)="onTriggerScript()">Recommendation</button>
-    <p *ngIf="responseMessage">{{ responseMessage }}</p>
-    <div>
-        <pre *ngIf="resultContent">{{ resultContent }}</pre>
+    <div class="right-panel" style="float: right; width: 65%;">
+        @if (the_patient) {
+        <div class="personal-info">
+            <h3>Personal Information</h3>
+            <p>Name: {{ the_patient.name }}</p>
+            <p>Age: {{ the_patient.age }}</p>
+            <p>Dietary Restrictions: {{ the_patient.dietary_restriction }}</p>
+            <p>Allergen: {{ the_patient.allergen }}</p>
+            <p>Taste Change: {{ the_patient.taste_change }}</p>
+            <p>Preferred Cuisine: {{ the_patient.preferred_cuisine }}</p>
+        </div>
+        }
+        <div class="result-item">
+            @for (recipe of recommended_recipes(); track recipe.id) {
+                <li class="recipe-box" 
+                    (mouseenter)="showPopup($event, recipe)" 
+                    (mouseleave)="hidePopup()">
+                    <div class="recipe-content">
+                        <img [src]="recipe.img_url" alt="Recipe Image from picsum.photos" class="recipe-image" 
+                        width="200" height="200">
+                        <div class="popup" 
+                             [class.show]="activeRecipe === recipe">
+                            <div class="popup-content">
+                                <h3>Recipe Details</h3>
+                                <p>Category: {{recipe.category}}</p>
+                                <p>Cuisine: {{recipe.cuisine}}</p>
+                                <p>Calories: {{recipe.calories}}</p>
+                                <p>Protein: {{recipe.protein}}</p>
+                                <p>Carbs: {{recipe.carbs}}</p>
+                                <p>Fat: {{recipe.fat}}</p>
+                                <p>Sodium: {{recipe.sodium}}</p>
+
+                                <div class="diet-labels">
+                                    <span class="diet-label" [class.vegetarian]="recipe.is_vegetarian">
+                                        {{recipe.is_vegetarian ? 'Vegetarian' : 'Non-Vegetarian'}}
+                                    </span>
+                                    <span class="diet-label" [class.vegan]="recipe.is_vegan">
+                                        {{recipe.is_vegan ? 'Vegan' : 'Non-Vegan'}}
+                                    </span>
+                                    <span class="diet-label" [class.gluten-free]="recipe.is_gluten_free">
+                                        {{recipe.is_gluten_free ? 'Gluten-Free' : 'Non-Gluten-Free'}}
+                                    </span>
+                                    <span class="diet-label" [class.dairy-free]="recipe.is_dairy_free">
+                                        {{recipe.is_dairy_free ? 'Dairy-Free' : 'Non-Dairy-Free'}}
+                                    </span>
+                                    <span class="diet-label" [class.halal]="recipe.is_halal">
+                                        {{recipe.is_halal ? 'Halal' : 'Non-Halal'}}
+                                    </span>
+                                    <span class="diet-label" [class.kosher]="recipe.is_kosher">
+                                        {{recipe.is_kosher ? 'Kosher' : 'Non-Kosher'}}
+                                    </span>
+                                    <span class="diet-label" [class.sweet]="recipe.is_sweet">
+                                        {{recipe.is_sweet ? 'Sweet' : 'Non-Sweet'}}
+                                    </span>
+                                    <span class="diet-label" [class.bitter]="recipe.is_bitter">
+                                        {{recipe.is_bitter ? 'Bitter' : 'Non-Bitter'}}
+                                    </span>
+                                    <span class="diet-label" [class.metallic]="recipe.is_metallic">
+                                        {{recipe.is_metallic ? 'Metallic' : 'Non-Metallic'}}
+                                    </span>
+                                    <span class="diet-label" [class.acidic]="recipe.is_acidic">
+                                        {{recipe.is_acidic ? 'Acidic' : 'Non-Acidic'}}
+                                    </span>
+                                    <span class="diet-label" [class.soft]="recipe.is_soft">
+                                        {{recipe.is_soft ? 'Soft' : 'Non-Soft'}}
+                                    </span>
+                                    <span class="diet-label" [class.crunchy]="recipe.is_crunchy">
+                                        {{recipe.is_crunchy ? 'Crunchy' : 'Non-Crunchy'}}
+                                    </span>
+                                    <span class="diet-label" [class.chewy]="recipe.is_chewy">
+                                        {{recipe.is_chewy ? 'Chewy' : 'Non-Chewy'}}
+                                    </span>
+                                    <span class="diet-label" [class.liquid]="recipe.is_liquid">
+                                        {{recipe.is_liquid ? 'Liquid' : 'Non-Liquid'}}
+                                    </span>
+                                    <span class="diet-label" [class.cold]="recipe.is_cold">
+                                        {{recipe.is_cold ? 'Cold' : 'Non-Cold'}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            }
+        </div>
     </div>
 </div>

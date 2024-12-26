@@ -1,0 +1,32 @@
+<h2>Recipes</h2>
+
+
+<form class="searchbox">
+    <label>Filter by Category</label>
+    <input placeholder="Category ..." name="searchCategory" type="text" [(ngModel)]="searchCategory"/>
+</form>
+
+<form class="searchbox">
+    <label>Filter by Cuisine</label>
+    <input placeholder="Cuisine ..." name="searchCuisine" type="text" [(ngModel)]="searchCuisine"/>
+</form>
+
+<form class="searchbox">
+    <label>Upperbound Calories</label>
+    <input placeholder="Infinity" name="upperCalories" type="number" [(ngModel)]="upperCalories"/>
+</form>
+
+<form class="checkbox-style">
+    <label>Sort by vegetarian</label>
+    <input type="checkbox" name="sortByVegetarian" [(ngModel)]="sortByVegetarian"/>
+</form>
+
+@if (!recipes().length) {
+    <p>Loading...</p>
+}
+
+<ul class="recipe-grid">
+    @for (recipe of recipes() | filterRecipes:searchCategory():searchCuisine():upperCalories():sortByVegetarian(); track recipe.id) {
+        <app-recipe-item [recipe]="recipe" class="recipe-box"></app-recipe-item>
+    }
+</ul>

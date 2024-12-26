@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import random
-
+import names
 # Generate fake patient data
 def generate_patient_data(n_patients:int=100, seed:int=42):
     np.random.seed(seed)
@@ -13,7 +13,9 @@ def generate_patient_data(n_patients:int=100, seed:int=42):
     cuisines = ['chinese', 'italian', 'indian', 'american', 'mexican', 'japanese']
     
     data = {
-        'patient_id': range(n_patients),
+        'name': [names.get_full_name() for _ in range(n_patients)],
+        'img_url': [f'https://picsum.photos/100/100?random={i}' for i in range(n_patients)],
+        'id': range(n_patients),
         'age': np.random.randint(18, 85, n_patients),
         'taste_change': [random.choice(taste_changes) for _ in range(n_patients)],
         'dietary_restriction': [random.choice(dietary_restrictions) for _ in range(n_patients)],
@@ -36,7 +38,8 @@ def generate_recipe_data(n_recipes:int=500000, seed:int=42):
     cuisines = ['chinese', 'italian', 'indian', 'american', 'mexican', 'japanese']
     
     data = {
-        'recipe_id': range(n_recipes),
+        'id': range(n_recipes),
+        'img_url': [f'https://picsum.photos/200/200?random={i}' for i in range(n_recipes)],
         'category': [random.choice(categories) for _ in range(n_recipes)],
         'cuisine': [random.choice(cuisines) for _ in range(n_recipes)],
         'calories': np.random.normal(500, 150, n_recipes),

@@ -8,8 +8,26 @@ export const routes: Routes = [{
     },
 },
 {
-    path: 'todos',
+    path: 'patients',
     loadComponent: () => {
-        return import('./todos/todos.component').then(c => c.TodosComponent)
+        return import('./patients/patients.component').then(c => c.PatientsComponent)
+    }
+},
+{
+    path: 'recipes',
+    loadComponent: () => {
+        return import('./recipes/recipes.component').then(c => c.RecipesComponent)
+    }
+},
+{
+    path: 'details/:id',
+    loadComponent: () => {
+        return import('./p-details/p-details.component').then(c => c.PDetailsComponent)
+    }
+},
+{
+    path: 'recipe-details/:id',
+    loadComponent: () => {
+        return import('./r-details/r-details.component').then(c => c.RDetailsComponent)
     }
 }]; 

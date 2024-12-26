@@ -1,0 +1,10 @@
+<li class="patient-box">
+    <div class="patient-content">
+        <img [src]="patient().img_url" alt="Patient Image from picsum.photos" class="patient-image" [routerLink]="['/details', patient().id]" width="100" height="100">
+        <div class="patient-details">
+            <label for="patient-{{patient().id}}">
+                {{patient().name}}
+            </label>
+        </div>
+    </div>
+</li>

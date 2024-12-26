@@ -1,8 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ScriptService } from '../../services/trigger.service';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { FetchresultService } from '../../services/fetchresult.service';
+import { Recipe } from '../../model/recipe.type';
+import { FetchrecipesService } from '../../services/fetchrecipes.service';
+import { Patient } from '../../model/patient.type';
+import { FetchpatientsService } from '../../services/fetchpatients.service';
+
+interface MatchResult {
+  recipe_ids: number[];
+  similarities: number[];
+}
+
 @Component({
   selector: 'app-triggerbutton',
   standalone: true,
@@ -12,50 +22,46 @@ import { FetchresultService } from '../../services/fetchresult.service';
 })
 export class TriggerbuttonComponent {
   patient_id: number = 0;
+  the_patient: Patient | null = null;
   num_recommendations: number = 0;
   responseMessage: string = '';
-  resultContent: string | null = null;
-  constructor(private scriptService: ScriptService, private fetchresultService: FetchresultService) {}
-
+  resultContent: MatchResult | null = null;
+  recommended_recipes = signal<Array<Recipe>>([]);
+  activeRecipe: any = null;
+  constructor(private scriptService: ScriptService, private fetchresultService: FetchresultService, private fetchrecipesService: FetchrecipesService, private fetchpatientsService: FetchpatientsService) {}
 
   onTriggerScript(): void {
     
     this.scriptService.triggerScript(this.patient_id, this.num_recommendations).subscribe({
-      next: (response: any) => {
-        this.responseMessage = response.message;
-        console.log('Script triggered:', response);
-        
-        // Poll for results every second until we get them or hit max retries
-        let retryCount = 0;
-        const maxRetries = 2; // Maximum 30 seconds of waiting
-        const pollInterval = setInterval(() => {
-          this.fetchresultService.fetchResult().subscribe({
-            next: (response: {content: string}) => {
-              if (response.content) {
-                this.resultContent = response.content;
-                clearInterval(pollInterval);
-              }
-              retryCount++;
-              if (retryCount >= maxRetries) {
-                clearInterval(pollInterval);
-                this.resultContent = 'Error: Timed out waiting for results.';
-              }
-            },
-            error: (error: Error) => {
-              console.error('Error fetching result:', error);
-              retryCount++;
-              if (retryCount >= maxRetries) {
-                clearInterval(pollInterval);
-                this.resultContent = 'Error: Could not fetch result file.';
-              }
-            }
-          });
-        }, 1000);
+      next: (response: MatchResult) => {
+        this.resultContent = response;
+        this.fetchrecipesService.getRecipesByIds(response.recipe_ids.toString()).subscribe(recipes => {
+          this.recommended_recipes.set(recipes);
+        });
+        this.fetchpatientsService.getPatientById(this.patient_id).subscribe(patient => {
+          this.the_patient = patient;
+        });
       },
-      error: (error: any) => {
-        console.error('Error triggering script:', error);
+      error: (error) => {
+        console.error('Error:', error);
         this.responseMessage = 'Error triggering script';
       }
     });
 }
+
+  showDetails(element: HTMLElement) {
+    element.style.display = 'block';
+  }
+
+  hideDetails(element: HTMLElement) {
+    element.style.display = 'none';
+  }
+
+  showPopup(event: MouseEvent, recipe: any) {
+    this.activeRecipe = recipe;
+  }
+
+  hidePopup() {
+    this.activeRecipe = null;
+  }
 }

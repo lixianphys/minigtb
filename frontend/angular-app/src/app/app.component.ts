@@ -12,7 +12,6 @@ import { HeaderComponent } from './header/header.component';
       <router-outlet></router-outlet>
     </main>
 
-    <router-outlet></router-outlet>
       `,
   styles: [
     `
@@ -20,12 +19,10 @@ import { HeaderComponent } from './header/header.component';
         padding: 16px;
       }
       header {
-        background-color: blue;
         padding: 16px;
+        background-color: #f0f0f0;
       }
     `,
   ],
 })
-export class AppComponent {
-  title = 'hello';
-}
+export class AppComponent {}

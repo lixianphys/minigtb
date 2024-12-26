@@ -1,0 +1,16 @@
+<h2>Patients</h2>
+
+
+<form>
+    <label>Find Patients by Name</label><br>    
+    <input placeholder="Search ..." name="searchTerm" type="text" [(ngModel)]="searchTerm"/>
+</form>
+
+@if (!patients().length) {
+    <p>Loading...</p>
+}
+<ul class="patient-grid">
+    @for (patient of patients() | filterPatients:searchTerm(); track patient.id) {
+        <app-patient-item [patient]="patient" class="patient-box"></app-patient-item>
+    }
+</ul>

@@ -2,10 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from fake import generate_patient_data, generate_recipe_data
-from config import TASTE_FEATURES, NUTRITIONAL_FEATURES, TEXTURE_FEATURES, TEMPERATURE_FEATURES, TASTE_ADJUSTMENTS, HEALTH_FACTOR, HEALTH_WEIGHTS
-# Constants
-HIGH_BP_THRESHOLD = 130
-HIGH_BS_THRESHOLD = 120
+from config import TASTE_FEATURES, NUTRITIONAL_FEATURES, TEXTURE_FEATURES, TEMPERATURE_FEATURES, TASTE_ADJUSTMENTS, HEALTH_FACTOR, HEALTH_WEIGHTS, HIGH_BP_THRESHOLD, HIGH_BS_THRESHOLD
 
 # Add new global constant
 DIMENSION_FEATURES = TASTE_FEATURES + NUTRITIONAL_FEATURES + TEXTURE_FEATURES + TEMPERATURE_FEATURES
@@ -43,6 +40,12 @@ def create_strict_mask(patient_row:pd.Series, recipes_df:pd.DataFrame)->pd.Serie
         diet_col = diet_map.get(patient_row['dietary_restriction'])
         if diet_col and diet_col in recipes_df.columns:
             mask &= recipes_df[diet_col] == 1
+
+
+    # Preferred cuisine filtering
+    if patient_row['preferred_cuisine'] != 'none':
+        mask &= recipes_df['cuisine'] == patient_row['preferred_cuisine']
+
     
     return mask
 
@@ -95,6 +98,7 @@ def create_ideal_recipe_vector(patient_row:pd.Series)->pd.Series:
         ideal_vector = ideal_vector - penalty_vector
             
         return ideal_vector
+
     ideal_vector = initialize_ideal_recipe_vector(patient_row)
     
     def adjust_recipe_by_taste(ideal_recipe_vector:pd.Series, patient_row:pd.Series)->pd.Series:
@@ -112,6 +116,7 @@ def create_ideal_recipe_vector(patient_row:pd.Series)->pd.Series:
                     recipe_vector[feature] *= (1 + weight)
         
         return recipe_vector
+        
     adjusted_vector = adjust_recipe_by_taste(ideal_vector, patient_row)
     
-    return ideal_vector
+    return adjusted_vector

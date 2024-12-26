@@ -33,30 +33,73 @@ def run_match(patient_id: int, num_recommendations: int):
 async def trigger_script(request: TriggerScriptRequest,background_tasks: BackgroundTasks):
     background_tasks.add_task(run_match, request.patient_id, request.num_recommendations)
     try:
-        with open("result.txt", "r") as file:
-            content = file.read()
-        return {"content": content}
+        with open("result.json", "r") as file:
+            content = json.load(file)
+        return content
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Result file not found")
 
 @app.get("/fetch-result")
 async def fetch_result():
-    try:
-        with open("result.txt", "r") as file:
-            content = file.read()
-        return {"content": content}
-    except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="Result file not found")
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+    with open("result.json", "r") as file:
+        content = json.load(file)
+    return content
 
 @app.get("/patient_database")
 async def get_patient_database():
     # Dummy response for now
-    return json.load(open('patient_dataset.json', 'r'))[:10]
+    return json.load(open('patient_dataset.json', 'r'))[:100]
+
+@app.get("/patient_database/{id}")
+async def get_patient_by_id(id: int):
+    try:
+        with open('patient_dataset.json', 'r') as file:
+            data = json.load(file)  # Load entire file at once
+            for patient in data:
+                if patient.get('id') == id:
+                    return patient
+        raise HTTPException(status_code=404, detail="Patient not found")
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Patient database not found")
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=500, detail="Invalid JSON format in database")
+
+
 
 @app.get("/recipe_database")
 async def get_recipe_database():
-    return json.load(open('recipe_dataset.json', 'r'))[:10]
+    return json.load(open('recipe_dataset.json', 'r'))[:1000]
+
+@app.get("/recipe_database/{id}")
+async def get_recipe_by_id(id: int):
+    try:
+        with open('recipe_dataset.json', 'r') as file:
+            data = json.load(file)  # Load entire file at once
+            for recipe in data:
+                if recipe.get('id') == id:
+                    return recipe
+        raise HTTPException(status_code=404, detail="Recipe not found")
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Recipe database not found")
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=500, detail="Invalid JSON format in database")
+
+@app.get("/recipe_database/ids/{ids}")
+async def get_recipes_by_ids(ids: str):
+    try:
+        # Convert comma-separated string of IDs to list of integers
+        id_list = [int(id) for id in ids.split(',')]
+        
+        with open('recipe_dataset.json', 'r') as file:
+            data = json.load(file)
+            recipes = [recipe for recipe in data if recipe['id'] in id_list]
+            
+            if not recipes:
+                raise HTTPException(status_code=404, detail="No recipes found for given IDs")
+                
+            return recipes
+            
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Recipe database not found")
+    except (ValueError, json.JSONDecodeError):
+        raise HTTPException(status_code=400, detail="Invalid ID format or database format")

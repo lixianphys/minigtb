@@ -1,0 +1,38 @@
+form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    & label{
+        margin-bottom: 10px;
+    }
+    & input{
+        margin-bottom: 10px;
+        width: 20%;
+    }
+}
+
+.patient-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Increased minmax width to prevent overlap */
+    gap: 10px; /* Increased gap between items */
+    list-style: none;
+    padding: 10px; /* Added padding around grid */
+    margin: 0 auto;
+    justify-content: center;
+    max-width: 1200px; /* Added max-width to control overall grid width */
+}
+
+.patient-box {
+    width: 100%; /* Full width of grid cell */
+    max-width: 150px;
+    margin: 0 auto; /* Center box in grid cell */
+    box-sizing: border-box;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effects */
+    cursor: pointer; /* Show pointer on hover */
+
+    &:hover {
+        transform: translateY(-5px); /* Slight upward movement on hover */
+    }
+}
