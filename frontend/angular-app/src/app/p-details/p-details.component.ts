@@ -12,6 +12,7 @@ import { FetchpatientsService } from '../services/fetchpatients.service';
     @else {
     <p>
       Name: {{patientName}}<br>
+      ID: {{patientId}}<br>
       Age: {{patientAge}}<br>
       Allergen: {{patientAllergen}}<br>
       Dietary Restriction: {{patientDietaryRestriction}}<br>

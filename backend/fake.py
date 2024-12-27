@@ -21,8 +21,8 @@ def generate_patient_data(n_patients:int=100, seed:int=42):
         'dietary_restriction': [random.choice(dietary_restrictions) for _ in range(n_patients)],
         'allergen': [random.choice(allergens) for _ in range(n_patients)],
         'preferred_cuisine': [random.choice(cuisines) for _ in range(n_patients)],
-        'blood_pressure': np.random.normal(120, 20, n_patients),
-        'blood_sugar': np.random.normal(100, 15, n_patients)
+        'blood_pressure': np.round(np.random.normal(120, 20, n_patients), decimals=0),
+        'blood_sugar': np.round(np.random.normal(100, 15, n_patients), decimals=1)
     }
     
     return pd.DataFrame(data)
@@ -42,11 +42,11 @@ def generate_recipe_data(n_recipes:int=500000, seed:int=42):
         'img_url': [f'https://picsum.photos/200/200?random={i}' for i in range(n_recipes)],
         'category': [random.choice(categories) for _ in range(n_recipes)],
         'cuisine': [random.choice(cuisines) for _ in range(n_recipes)],
-        'calories': np.random.normal(500, 150, n_recipes),
-        'protein': np.random.normal(20, 8, n_recipes),
-        'carbs': np.random.normal(50, 20, n_recipes),
-        'fat': np.random.normal(20, 10, n_recipes),
-        'sodium': np.random.normal(500, 200, n_recipes),
+        'calories': np.round(np.random.normal(500, 150, n_recipes), decimals=3),
+        'protein': np.round(np.random.normal(20, 8, n_recipes), decimals=3),
+        'carbs': np.round(np.random.normal(50, 20, n_recipes), decimals=3),
+        'fat': np.round(np.random.normal(20, 10, n_recipes), decimals=3),
+        'sodium': np.round(np.random.normal(500, 200, n_recipes), decimals=3),
     }
     
     # Generate binary features

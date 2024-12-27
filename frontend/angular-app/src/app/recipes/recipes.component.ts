@@ -5,12 +5,20 @@ import { FormsModule } from '@angular/forms';
 import { RecipeItemsComponent } from '../components/recipe-items/recipe-items.component';
 import { catchError } from 'rxjs';
 import { FetchrecipesService } from '../services/fetchrecipes.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-recipes',
-  imports: [FilterRecipesPipe, FormsModule, RecipeItemsComponent],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    FilterRecipesPipe,
+    RecipeItemsComponent
+  ],
   templateUrl: './recipes.component.html',
-  styleUrl: './recipes.component.scss'
+  styleUrl: './recipes.component.scss',
+  providers: [FetchrecipesService]
 })
 export class RecipesComponent implements OnInit {
   recipeService = inject(FetchrecipesService);  
@@ -18,17 +26,34 @@ export class RecipesComponent implements OnInit {
   searchCategory = signal('');
   searchCuisine = signal('');
   upperCalories = signal(Infinity);
-  sortByVegetarian = signal(false);
+  OnlyVegetarian = signal(false);
+  searchID = signal(-Infinity);
+  ngInfinity = signal(-Infinity);
   ngOnInit(): void {
-    this.recipeService.getRecipesFromApi().
-    pipe(
-      catchError((err) => {
-        console.log(err);
-        throw err;
-      })
-    )
-    .subscribe((recipes: Recipe[]) => {
-      this.recipes.set(recipes);
-    });
+    this.recipeService.getRecipesFromApi()
+      .pipe(
+        catchError((err) => {
+          console.log(err);
+          throw err;
+        })
+      )
+      .subscribe((recipes: Recipe[]) => {
+        this.recipes.set(recipes);
+      });
+  }
+
+  onSearchIDChange(value: number) {
+    this.searchID.set(value);
+    if (value<0) {
+        this.recipeService.getRecipesFromApi()
+            .subscribe(recipes => {
+                this.recipes.set(recipes);
+            });
+    } else {
+        this.recipeService.getRecipeById(value)
+            .subscribe(recipe => {
+                this.recipes.set([recipe]);
+            });
+    }
   }
 }

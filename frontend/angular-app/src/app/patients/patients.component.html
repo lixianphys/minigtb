@@ -3,7 +3,17 @@
 
 <form>
     <label>Find Patients by Name</label><br>    
-    <input placeholder="Search ..." name="searchTerm" type="text" [(ngModel)]="searchTerm"/>
+    <input 
+        placeholder="Search ..." 
+        name="searchTerm"
+        [(ngModel)]="searchTerm"
+        class="form-control"
+        type="text" 
+        required
+        #searchInput="ngModel"
+        [ngClass]="{'is-invalid': searchInput.touched && searchInput.invalid}"
+    />
+    <div class="alert alert-danger" *ngIf='searchInput.touched && searchInput.invalid'>Search term is required.</div>
 </form>
 
 @if (!patients().length) {

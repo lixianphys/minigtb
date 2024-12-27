@@ -1,6 +1,22 @@
 <h2>Recipes</h2>
 
 
+<form class="search-id-box">
+    <label>Find by ID</label>
+    <input 
+        placeholder="ID ..." 
+        name="searchID"
+        [(ngModel)]="searchID"
+        class="form-control"
+        type="number"
+        #searchInput="ngModel"
+        [ngClass]="{'is-invalid': searchInput.touched && searchInput.invalid}"
+    />
+    <div class="alert alert-danger" *ngIf='searchInput.touched && searchInput.invalid'>Search term is required.</div>
+    <button type="button" (click)="onSearchIDChange(searchInput.value)" [disabled]="searchInput.value < 0">Send</button>
+    <button type="button" (click)="onSearchIDChange(ngInfinity())">Reset</button>
+</form>
+
 <form class="searchbox">
     <label>Filter by Category</label>
     <input placeholder="Category ..." name="searchCategory" type="text" [(ngModel)]="searchCategory"/>
@@ -17,8 +33,8 @@
 </form>
 
 <form class="checkbox-style">
-    <label>Sort by vegetarian</label>
-    <input type="checkbox" name="sortByVegetarian" [(ngModel)]="sortByVegetarian"/>
+    <label>Only Vegetarian</label>
+    <input type="checkbox" name="OnlyVegetarian" [(ngModel)]="OnlyVegetarian"/>
 </form>
 
 @if (!recipes().length) {
@@ -26,7 +42,7 @@
 }
 
 <ul class="recipe-grid">
-    @for (recipe of recipes() | filterRecipes:searchCategory():searchCuisine():upperCalories():sortByVegetarian(); track recipe.id) {
+    @for (recipe of recipes() | filterRecipes:searchCategory():searchCuisine():upperCalories():OnlyVegetarian(); track recipe.id) {
         <app-recipe-item [recipe]="recipe" class="recipe-box"></app-recipe-item>
     }
 </ul>

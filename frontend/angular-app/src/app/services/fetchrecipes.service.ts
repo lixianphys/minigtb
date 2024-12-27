@@ -15,7 +15,7 @@ export class FetchrecipesService {
     const url = 'http://localhost:8000/recipe_database';
     return this.http.get<Array<Recipe>>(url);
   }
-  getRecipeById(id: number) {
+  getRecipeById(id:number) {
     const url = `http://localhost:8000/recipe_database/${id}`;
     return this.http.get<Recipe>(url);
   }

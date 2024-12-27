@@ -1,8 +1,9 @@
-from fastapi import FastAPI, BackgroundTasks
+from fastapi import FastAPI, BackgroundTasks,HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import subprocess
 import json
+import asyncio
 app = FastAPI()
 
 # Configure CORS
@@ -17,8 +18,8 @@ app.add_middleware(
 class PatientData(BaseModel):
     allergen: str
     dietary_restriction: str
-    blood_sugar: int
-    blood_pressure: int
+    blood_sugar: float
+    blood_pressure: float
     taste_change: str
 
 class TriggerScriptRequest(BaseModel):
@@ -31,19 +32,19 @@ def run_match(patient_id: int, num_recommendations: int):
 
 @app.post("/trigger-script")
 async def trigger_script(request: TriggerScriptRequest,background_tasks: BackgroundTasks):
+    # Clear the result file before running the matching script
     background_tasks.add_task(run_match, request.patient_id, request.num_recommendations)
+
+@app.get("/fetch-result")
+async def fetch_result():
     try:
         with open("result.json", "r") as file:
             content = json.load(file)
         return content
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Result file not found")
-
-@app.get("/fetch-result")
-async def fetch_result():
-    with open("result.json", "r") as file:
-        content = json.load(file)
-    return content
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=500, detail="Invalid JSON format in result file")
 
 @app.get("/patient_database")
 async def get_patient_database():

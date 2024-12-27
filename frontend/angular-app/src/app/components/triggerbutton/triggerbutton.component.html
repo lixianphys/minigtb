@@ -2,30 +2,41 @@
     <div class="left-panel" style="float: left; width: 30%;">
         <div class="trigger-container">
             <h3>Get Personalized Recommendations</h3>
-            <div class="form-section">
-                <div class="form-group">
-                    <label for="patient_id">Patient ID:</label>
-                    <input 
-                        id="patient_id"
-                        [(ngModel)]="patient_id"
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter patient ID"
-                    />
+            <form #f ='ngForm' (ngSubmit)="onSubmit(f)">
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="patient_id">Patient ID:</label>
+                        <input 
+                            name="patientID"
+                            ngModel
+                            type="number"
+                            class="form-control"
+                            placeholder="Enter patient ID"
+                            required
+                            #patientID="ngModel"
+                            [ngClass]="{'is-invalid': patientID.touched && patientID.invalid}"
+                        />
+                        <div class="alert alert-danger" *ngIf = 'patientID.touched && patientID.invalid' > Patient ID is required and should be a positive integer.. </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="num_recommendations">Number of Recommendations:</label>
+                        <input 
+                            name="numRecommendations"
+                            ngModel
+                            type="number"
+                            class="form-control"
+                            placeholder="Enter number of recommendations"
+                            required
+                            #numRecommendations="ngModel"
+                            [ngClass]="{'is-invalid': numRecommendations.touched && numRecommendations.invalid}"
+                        />
+                        <div class="alert alert-danger" *ngIf = 'numRecommendations.touched && numRecommendations.invalid' > Number of recommendations is required and should be a positive integer.. </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="num_recommendations">Number of Recommendations:</label>
-                    <input 
-                        id="num_recommendations"
-                        [(ngModel)]="num_recommendations"
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter number of recommendations"
-                    />
-                </div>
-            </div>
-            <button class="button" (click)="onTriggerScript()">Recommendation</button>
-            <p *ngIf="responseMessage">{{ responseMessage }}</p>
+                <button type="submit" class="btn btn-primary" [disabled]="patientID.invalid || numRecommendations.invalid">Submit</button>
+                <button type="button" class="btn btn-primary" (click)="onFetch(f)">Fetch</button>
+                <p *ngIf="errorMessage">{{ errorMessage }}</p>
+            </form>
         </div>
     </div>
     <div class="right-panel" style="float: right; width: 65%;">
@@ -52,58 +63,54 @@
                              [class.show]="activeRecipe === recipe">
                             <div class="popup-content">
                                 <h3>Recipe Details</h3>
-                                <p>Category: {{recipe.category}}</p>
-                                <p>Cuisine: {{recipe.cuisine}}</p>
-                                <p>Calories: {{recipe.calories}}</p>
-                                <p>Protein: {{recipe.protein}}</p>
-                                <p>Carbs: {{recipe.carbs}}</p>
-                                <p>Fat: {{recipe.fat}}</p>
-                                <p>Sodium: {{recipe.sodium}}</p>
-
-                                <div class="diet-labels">
-                                    <span class="diet-label" [class.vegetarian]="recipe.is_vegetarian">
+                                <p>
+                                ID: {{recipe.id}}<br>
+                                Category: {{recipe.category}}<br>
+                                Cuisine: {{recipe.cuisine}}<br>
+                                Calories: {{recipe.calories}}<br>
+                                Protein: {{recipe.protein}}<br>
+                                Carbs: {{recipe.carbs}}<br>
+                                Fat: {{recipe.fat}}<br>
+                                Sodium: {{recipe.sodium}}<br>
+                                </p>
+                                <div class="diet-labels" style="text-align: right;">
+                                    <span class="diet-label" [class.property]="recipe.is_vegetarian">
                                         {{recipe.is_vegetarian ? 'Vegetarian' : 'Non-Vegetarian'}}
                                     </span>
-                                    <span class="diet-label" [class.vegan]="recipe.is_vegan">
+                                    <span class="diet-label" [class.property]="recipe.is_vegan">
                                         {{recipe.is_vegan ? 'Vegan' : 'Non-Vegan'}}
                                     </span>
-                                    <span class="diet-label" [class.gluten-free]="recipe.is_gluten_free">
+                                    <span class="diet-label" [class.property]="recipe.is_gluten_free">
                                         {{recipe.is_gluten_free ? 'Gluten-Free' : 'Non-Gluten-Free'}}
                                     </span>
-                                    <span class="diet-label" [class.dairy-free]="recipe.is_dairy_free">
+                                    <span class="diet-label" [class.property]="recipe.is_dairy_free">
                                         {{recipe.is_dairy_free ? 'Dairy-Free' : 'Non-Dairy-Free'}}
                                     </span>
-                                    <span class="diet-label" [class.halal]="recipe.is_halal">
-                                        {{recipe.is_halal ? 'Halal' : 'Non-Halal'}}
-                                    </span>
-                                    <span class="diet-label" [class.kosher]="recipe.is_kosher">
-                                        {{recipe.is_kosher ? 'Kosher' : 'Non-Kosher'}}
-                                    </span>
-                                    <span class="diet-label" [class.sweet]="recipe.is_sweet">
+                                    <span class="diet-label" [class.property]="recipe.is_sweet">
                                         {{recipe.is_sweet ? 'Sweet' : 'Non-Sweet'}}
                                     </span>
-                                    <span class="diet-label" [class.bitter]="recipe.is_bitter">
+                                    <span class="diet-label" [class.property]="recipe.is_bitter">
                                         {{recipe.is_bitter ? 'Bitter' : 'Non-Bitter'}}
                                     </span>
-                                    <span class="diet-label" [class.metallic]="recipe.is_metallic">
+                                    <span class="diet-label" [class.property]="recipe.is_metallic">
                                         {{recipe.is_metallic ? 'Metallic' : 'Non-Metallic'}}
                                     </span>
-                                    <span class="diet-label" [class.acidic]="recipe.is_acidic">
+                                    <span class="diet-label" [class.property]="recipe.is_acidic">
                                         {{recipe.is_acidic ? 'Acidic' : 'Non-Acidic'}}
                                     </span>
-                                    <span class="diet-label" [class.soft]="recipe.is_soft">
+                                    <span class="diet-label" [class.property]="recipe.is_soft">
                                         {{recipe.is_soft ? 'Soft' : 'Non-Soft'}}
                                     </span>
-                                    <span class="diet-label" [class.crunchy]="recipe.is_crunchy">
+                                    <span class="diet-label" [class.property]="recipe.is_crunchy">
                                         {{recipe.is_crunchy ? 'Crunchy' : 'Non-Crunchy'}}
                                     </span>
-                                    <span class="diet-label" [class.chewy]="recipe.is_chewy">
+                                    <span class="diet-label" [class.property]="recipe.is_chewy">
                                         {{recipe.is_chewy ? 'Chewy' : 'Non-Chewy'}}
                                     </span>
-                                    <span class="diet-label" [class.liquid]="recipe.is_liquid">
+                                    <span class="diet-label" [class.property]="recipe.is_liquid">
                                         {{recipe.is_liquid ? 'Liquid' : 'Non-Liquid'}}
                                     </span>
-                                    <span class="diet-label" [class.cold]="recipe.is_cold">
+                                    <span class="diet-label" [class.property]="recipe.is_cold">
                                         {{recipe.is_cold ? 'Cold' : 'Non-Cold'}}
                                     </span>
                                 </div>

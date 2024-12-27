@@ -13,6 +13,7 @@ import { FetchrecipesService } from '../services/fetchrecipes.service';
     @else {
     <img [src]="recipeImgUrl" alt="Recipe Image">
     <p>
+      ID: {{recipeId}}<br>
       Category: {{recipeCategory}}<br>
       Cuisine: {{recipeCuisine}}<br>
       Calories: {{recipeCalories}}<br>

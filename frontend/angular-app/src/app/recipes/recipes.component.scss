@@ -12,6 +12,22 @@
         width: 20%;
     }
 }
+
+.search-id-box{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    & input{
+        width: 5%;
+    }
+    & button{
+        width: 5%;
+    }
+    margin-bottom: 40px
+}
+
 .checkbox-style{
     display: flex;
     flex-direction: row;

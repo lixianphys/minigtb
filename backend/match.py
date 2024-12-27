@@ -81,6 +81,9 @@ def main():
     recommended_recipes = recommend_recipes(patients_row, recipes_df, n_recommendations=num_recommendations)
 
     # Convert recommended_recipes to JSON string and write to file
+    import os
+    if not os.path.exists('result.json'):
+        open('result.json', 'w').close()
     with open('result.json', 'w') as f:
         json.dump(recommended_recipes, f, indent=4)
 
