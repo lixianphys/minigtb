@@ -7,6 +7,6 @@ import { TriggerbuttonComponent } from '../components/triggerbutton/triggerbutto
   templateUrl: './home.component.html',
 })
 export class HomeComponent {
-  homeMessage = signal('Begleiten Sie uns auf einer spannende Reise durch Geschmack, Ernährung und Medizin!');
+  homeMessage = signal('Welcome to our recipe recommendation system!');
 
 }

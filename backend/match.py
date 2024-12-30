@@ -4,6 +4,7 @@ import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from vectorize import create_ideal_recipe_vector, create_recipe_vectors, create_strict_mask
 import json
+
 def recommend_recipes(patient_row:pd.Series, recipes_df:pd.DataFrame, n_recommendations:int=5)->dict:
     """
     Recommend recipes for a specific patient based on their profile and taste changes

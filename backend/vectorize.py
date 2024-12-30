@@ -91,7 +91,7 @@ def create_ideal_recipe_vector(patient_row:pd.Series)->pd.Series:
     def initialize_ideal_recipe_vector(patient_row:pd.Series, factor:float=HEALTH_FACTOR)->pd.Series:
         """Create feature vector for a single patient"""
         # Start with zero vector
-        ideal_vector = pd.Series(0.5, index=DIMENSION_FEATURES)
+        ideal_vector = pd.Series(1, index=DIMENSION_FEATURES)
         # penalties based on health conditions
         weights = calculate_health_weights(patient_row)
         penalty_vector = ideal_vector * weights * factor

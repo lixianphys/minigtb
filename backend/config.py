@@ -16,12 +16,10 @@ HEALTH_WEIGHTS = {
 
 TASTE_ADJUSTMENTS = {
     'sweet_loss': {
-        'is_sweet': -0.5,  # Reduce importance of sweet foods
         'is_cold': 0.2  # Slight preference for cold foods
     },
     'bitter_sensitivity': {
         'is_bitter': -0.8,  # Strongly reduce bitter foods
-        'is_sweet': 0.3,  # Increase importance of sweet foods
         'is_soft': 0.4  # Preference for soft textures
     },
     'metallic_taste': {

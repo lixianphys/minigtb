@@ -15,12 +15,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class PatientData(BaseModel):
-    allergen: str
-    dietary_restriction: str
-    blood_sugar: float
-    blood_pressure: float
-    taste_change: str
 
 class TriggerScriptRequest(BaseModel):
     patient_id: int
@@ -65,11 +59,9 @@ async def get_patient_by_id(id: int):
     except json.JSONDecodeError:
         raise HTTPException(status_code=500, detail="Invalid JSON format in database")
 
-
-
 @app.get("/recipe_database")
 async def get_recipe_database():
-    return json.load(open('recipe_dataset.json', 'r'))[:1000]
+    return json.load(open('recipe_dataset.json', 'r'))[:300]
 
 @app.get("/recipe_database/{id}")
 async def get_recipe_by_id(id: int):
