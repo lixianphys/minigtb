@@ -44,7 +44,7 @@ Finally, `recommend_recipes` is run to recommend recipes for the patient.
 All constants are in the `config.py` file, which are used in `vectorize.py`.
 
 ## Frontend
-The frontend is a simple Angular application that allows users to input their patient data and fetch recipe recommendations. In addition, the frontend allows users to inquire about the patient's database and the recipe database. 
+The frontend is a simple Angular application that allows users to input their patient data and fetch recipe recommendations. In addition, the frontend allows users to inquire about the patient's database and the recipe database. Here is the link to the youtube demo: https://youtu.be/yDpW55DIkw4
 
 ## Data
 The patient database is a Json file `patient_data.json` that contains the patient's data. The recipe database is a Json file `recipe_data.json` that contains the recipe's data. 
